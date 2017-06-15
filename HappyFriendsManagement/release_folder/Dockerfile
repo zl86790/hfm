@@ -1,5 +1,6 @@
 # Pull base image  
-FROM docker.io/centos:latest
+#FROM docker.io/centos:latest
+FROM docker.io/openjdk
 
 RUN yum install yum -y install java-1.8.0-openjdk*
 
