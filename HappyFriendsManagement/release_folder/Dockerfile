@@ -5,7 +5,7 @@ FROM 3bee3060bfc8
 RUN yum install yum -y install java-1.8.0-openjdk*
 
 # Expose ports.  
-EXPOSE 8080  
+EXPOSE 8888  
 
 COPY ./release_jars /release_jars 
 
