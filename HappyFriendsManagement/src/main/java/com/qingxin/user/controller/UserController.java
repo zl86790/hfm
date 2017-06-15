@@ -41,6 +41,28 @@ public class UserController {
     }
 	
 	@POST  
+	@Path("/getRecipients")
+	@Consumes(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON)  
+    public String getRecipients(JSONObject obj) {  
+		JSONObject result = new JSONObject();
+		UserService userService = UserService.getInstance();
+		try {
+			String mailAdress = obj.get("sender").toString();
+			List<String> recipients = userService.getRecipients(new User(mailAdress));
+			
+			result.put("success", true);
+			result.put("recipients", recipients);
+			
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return result.toString();
+    }
+	
+	@POST  
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
@@ -51,7 +73,6 @@ public class UserController {
 		try {
 			JSONArray array = (JSONArray) obj.get("friends");
 			
-			userService.create(new User(array.get(0).toString()),new User(array.get(1).toString()));
 			boolean success = userService.create(new User(array.get(0).toString()), new User(array.get(1).toString()));
 			
 			result.put("success", success);
@@ -82,16 +103,74 @@ public class UserController {
 			List<String> friends1 = userService.getFriends(new User(array.get(0).toString()));
 			List<String> friends2 = userService.getFriends(new User(array.get(1).toString()));
 			
-			friends1.retainAll(friends2);
+			List<String> commonFriends = userService.getCommonFriends(friends1,friends2);
 			
 			result.put("success", true);
-			result.put("friends", friends1);
-			result.put("count", friends1.size());
+			result.put("friends", commonFriends);
+			result.put("count", commonFriends.size());
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
 		return result.toString();
+    }
+	
+	@POST  
+	@Path("/subscribe")
+	@Consumes(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON)  
+    public String subscribe(JSONObject obj) {
+		UserService userService = UserService.getInstance();
+		JSONObject result = new JSONObject();
+		
+		try {
+			String requestor = obj.get("requestor").toString();
+			String target = obj.get("target").toString();
+			
+			boolean success = userService.subscribe(new User(requestor),new User(target));
+			
+			result.put("success", success);
+		} catch (JSONException e) {
+			try {
+				result.put("success", false);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			
+		} 
+		
+		return result.toString();  
+        
+    }
+	
+	@POST  
+	@Path("/block")
+	@Consumes(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON)  
+    public String block(JSONObject obj) {
+		UserService userService = UserService.getInstance();
+		JSONObject result = new JSONObject();
+		
+		try {
+			String requestor = obj.get("requestor").toString();
+			String target = obj.get("target").toString();
+			
+			boolean success = userService.block(new User(requestor),new User(target));
+			
+			result.put("success", success);
+		} catch (JSONException e) {
+			try {
+				result.put("success", false);
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			
+		} 
+		
+		return result.toString();  
+        
     }
 }

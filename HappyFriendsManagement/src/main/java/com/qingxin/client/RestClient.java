@@ -16,6 +16,34 @@ public class RestClient {
 		System.out.println(RestClient.getFriendsRequest());
 		System.out.println(RestClient.sendCreateRequest());
 		System.out.println(RestClient.getCommonFriendsRequest());
+		System.out.println(RestClient.sendSubscribeRequest());
+		System.out.println(RestClient.sendBlockRequest());
+		System.out.println(RestClient.getRecipients());
+		
+	}
+
+	private static String sendSubscribeRequest() {
+		String jsonstr = "{'requestor': 'lisa@example.com','target': 'john@example.com'}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			return sendPostRequest(obj,"subscribe");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static String sendBlockRequest() {
+		String jsonstr = "{'requestor': 'andy@example.com','target': 'john@example.com'}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			return sendPostRequest(obj,"block");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private static String getCommonFriendsRequest() {
@@ -30,6 +58,18 @@ public class RestClient {
 		return null;
 	}
 
+	private static String getRecipients() {
+		String jsonstr = "{sender:'andy@example.com','text': 'Hello World! kate@example.com'}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			return sendPostRequest(obj,"getRecipients");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private static String getFriendsRequest() {
 		String jsonstr = "{email:'andy@example.com'}";
 		JSONObject obj;
