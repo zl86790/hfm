@@ -1,4 +1,4 @@
-package com.qingxin.test;
+
 
 import com.qingxin.service.UserService;
 import com.qingxin.user.bean.User;
@@ -9,9 +9,9 @@ public class UserControllerTest extends TestCase {
 
 	public void testCreate(){
 		User anakinSkywalker = new User();
-		anakinSkywalker.setMailAddress("AnakinSkywalker@google.com");
+		anakinSkywalker.setMailAddress("andy@example.com");
 		User obiwanKonobi = new User();
-		obiwanKonobi.setMailAddress("ObiwanKonobi@google.com");
+		obiwanKonobi.setMailAddress("john@example.com");
 		
 		UserService service = UserService.getInstance();
 		service.create(anakinSkywalker, obiwanKonobi);

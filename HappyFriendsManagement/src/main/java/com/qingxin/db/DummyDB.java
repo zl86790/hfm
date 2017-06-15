@@ -1,4 +1,4 @@
-package com.qingxin.test;
+package com.qingxin.db;
 
 import java.util.ArrayList;
 import java.util.HashMap;

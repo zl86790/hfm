@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.qingxin.test.DummyDB;
+import com.qingxin.db.DummyDB;
 import com.qingxin.user.bean.User;
 
 public class UserService {
