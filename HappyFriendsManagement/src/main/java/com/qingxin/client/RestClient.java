@@ -97,7 +97,7 @@ public class RestClient {
 	private static String sendPostRequest(JSONObject obj, String functionPath) {
 		ClientConfig cc = new DefaultClientConfig();
 		Client client = Client.create(cc);
-		WebResource resource = client.resource("http://127.0.0.1:8080/user/" + functionPath);
+		WebResource resource = client.resource("http://127.0.0.1:8888/user/" + functionPath);
 
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class, obj);
@@ -109,7 +109,7 @@ public class RestClient {
 	private static String sendGetRequest(String functionPath) {
 		ClientConfig cc = new DefaultClientConfig();
 		Client client = Client.create(cc);
-		WebResource resource = client.resource("http://127.0.0.1:8080/user/" + functionPath);
+		WebResource resource = client.resource("http://127.0.0.1:8888/user/" + functionPath);
 
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON)
 				.get(ClientResponse.class);

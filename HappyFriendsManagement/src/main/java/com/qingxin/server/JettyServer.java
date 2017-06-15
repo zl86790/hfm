@@ -9,15 +9,18 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 public class JettyServer {
 
 	private void start() throws Exception {
-		int port = 8080;
+		int port = 8888;
 		Server server = new Server(port);
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
+		context.setResourceBase("./");
 		server.setHandler(context);
 		ServletHolder sh = new ServletHolder(ServletContainer.class);
 		sh.setInitParameter("com.sun.jersey.config.property.resourceConfigClass",
 				"com.sun.jersey.api.core.PackagesResourceConfig");
 		sh.setInitParameter("com.sun.jersey.config.property.packages", "com.qingxin.user.controller");
+		sh.setInitParameter("jersey.config.server.provider.classnames","org.glassfish.jersey.moxy.json.MoxyJsonFeature");
+
 		context.addServlet(sh, "/*");
 		server.start();
 	}
