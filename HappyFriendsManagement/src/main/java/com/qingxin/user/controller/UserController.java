@@ -1,33 +1,38 @@
 package com.qingxin.user.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;  
-import javax.ws.rs.Produces;  
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.qingxin.exceptions.AlreadyInFriendsListException;
 import com.qingxin.service.UserService;
 import com.qingxin.user.bean.User; 
 
 @Path("/user")
 public class UserController {
-	@GET  
-	@Path("/sayHello")
+	@POST  
+	@Path("/getFriends")
+	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String sayHello() {  
-		
-		JSONObject  result = new JSONObject ();
+    public String getFriends(JSONObject obj) {  
+		JSONObject result = new JSONObject();
+		UserService userService = UserService.getInstance();
 		try {
+			String mailAdress = obj.get("email").toString();
+			List<String> friends = userService.getFriends(new User(mailAdress));
+			
 			result.put("success", true);
+			result.put("friends", friends);
+			result.put("count", friends.size());
+			
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -46,19 +51,19 @@ public class UserController {
 		try {
 			JSONArray array = (JSONArray) obj.get("friends");
 			
+			userService.create(new User(array.get(0).toString()),new User(array.get(1).toString()));
 			boolean success = userService.create(new User(array.get(0).toString()), new User(array.get(0).toString()));
 			
 			result.put("success", success);
 		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (AlreadyInFriendsListException e) {
-			e.printStackTrace();
 			try {
 				result.put("success", false);
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
-		}
+			e.printStackTrace();
+			
+		} 
 		
 		return result.toString();  
         

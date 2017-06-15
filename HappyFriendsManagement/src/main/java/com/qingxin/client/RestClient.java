@@ -13,12 +13,19 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class RestClient {
 	public static void main(String args[]) {
-		RestClient.sendHelloRequest();
+		RestClient.getFriendsRequest();
 		RestClient.sendCreateRequest();
 	}
 
-	private static void sendHelloRequest() {
-		sendGetRequest("sayHello");
+	private static void getFriendsRequest() {
+		String jsonstr = "{email:'andy@example.com'}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			sendPostRequest(obj,"getFriends");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void sendCreateRequest(){
