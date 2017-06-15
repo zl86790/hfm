@@ -19,7 +19,7 @@ public class DummyDB {
 		
 		andy.getFriends().add(john);
 		andy.getFriends().add(tony);
-		
+		john.getFriends().add(tony);
 		
 	}
 }

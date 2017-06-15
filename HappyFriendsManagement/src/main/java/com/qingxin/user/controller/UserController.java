@@ -52,7 +52,7 @@ public class UserController {
 			JSONArray array = (JSONArray) obj.get("friends");
 			
 			userService.create(new User(array.get(0).toString()),new User(array.get(1).toString()));
-			boolean success = userService.create(new User(array.get(0).toString()), new User(array.get(0).toString()));
+			boolean success = userService.create(new User(array.get(0).toString()), new User(array.get(1).toString()));
 			
 			result.put("success", success);
 		} catch (JSONException e) {
@@ -67,5 +67,31 @@ public class UserController {
 		
 		return result.toString();  
         
+    }
+	
+	@POST  
+	@Path("/getCommonFriends")
+	@Consumes(MediaType.APPLICATION_JSON) 
+    @Produces(MediaType.APPLICATION_JSON)  
+    public String getCommonFriends(JSONObject obj) {  
+		JSONObject result = new JSONObject();
+		UserService userService = UserService.getInstance();
+		try {
+			JSONArray array = (JSONArray) obj.get("friends");
+			
+			List<String> friends1 = userService.getFriends(new User(array.get(0).toString()));
+			List<String> friends2 = userService.getFriends(new User(array.get(1).toString()));
+			
+			friends1.retainAll(friends2);
+			
+			result.put("success", true);
+			result.put("friends", friends1);
+			result.put("count", friends1.size());
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return result.toString();
     }
 }

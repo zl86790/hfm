@@ -6,6 +6,8 @@ import java.util.List;
 public class User {
 	private String mailAddress;
 	private List<User> friends = new ArrayList<User>();
+	private List<User> observers = new ArrayList<User>();
+	
 	
 	public User(){
 		
@@ -25,6 +27,12 @@ public class User {
 	}
 	public void setFriends(List<User> friends) {
 		this.friends = friends;
+	}
+	public List<User> getObservers() {
+		return observers;
+	}
+	public void setObservers(List<User> observers) {
+		this.observers = observers;
 	}
 	
 	

@@ -13,34 +13,48 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class RestClient {
 	public static void main(String args[]) {
-		RestClient.getFriendsRequest();
-		RestClient.sendCreateRequest();
+		System.out.println(RestClient.getFriendsRequest());
+		System.out.println(RestClient.sendCreateRequest());
+		System.out.println(RestClient.getCommonFriendsRequest());
 	}
 
-	private static void getFriendsRequest() {
-		String jsonstr = "{email:'andy@example.com'}";
-		JSONObject obj;
-		try {
-			obj = new JSONObject(jsonstr);
-			sendPostRequest(obj,"getFriends");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void sendCreateRequest(){
+	private static String getCommonFriendsRequest() {
 		String jsonstr = "{friends:['andy@example.com','john@example.com']}";
 		JSONObject obj;
 		try {
 			obj = new JSONObject(jsonstr);
-			sendPostRequest(obj,"create");
+			return sendPostRequest(obj,"getCommonFriends");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		return null;
 	}
 
-	private static void sendPostRequest(JSONObject obj, String functionPath) {
+	private static String getFriendsRequest() {
+		String jsonstr = "{email:'andy@example.com'}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			return sendPostRequest(obj,"getFriends");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static String sendCreateRequest(){
+		String jsonstr = "{friends:['andy@example.com','john@example.com']}";
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonstr);
+			return sendPostRequest(obj,"create");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static String sendPostRequest(JSONObject obj, String functionPath) {
 		ClientConfig cc = new DefaultClientConfig();
 		Client client = Client.create(cc);
 		WebResource resource = client.resource("http://127.0.0.1:8080/user/" + functionPath);
@@ -49,10 +63,10 @@ public class RestClient {
 				.post(ClientResponse.class, obj);
 
 		String returnedString = response.getEntity(String.class);
-		System.out.println(returnedString);
+		return returnedString;
 	}
 
-	private static void sendGetRequest(String functionPath) {
+	private static String sendGetRequest(String functionPath) {
 		ClientConfig cc = new DefaultClientConfig();
 		Client client = Client.create(cc);
 		WebResource resource = client.resource("http://127.0.0.1:8080/user/" + functionPath);
@@ -61,7 +75,7 @@ public class RestClient {
 				.get(ClientResponse.class);
 
 		String returnedString = response.getEntity(String.class);
-		System.out.println(returnedString);
+		return returnedString;
 	}
 
 }
