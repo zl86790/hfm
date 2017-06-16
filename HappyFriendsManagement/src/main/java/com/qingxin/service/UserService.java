@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import com.qingxin.db.DummyDB;
 import com.qingxin.user.bean.User;
+import com.qingxin.user.exception.CreateConflictException;
+import com.qingxin.user.exception.UserNotFoundException;
 
 public class UserService {
 	
@@ -20,16 +22,20 @@ public class UserService {
 		return userService;
 	}
 	
-	public boolean create(User user1, User user2){
+	public boolean create(User user1, User user2) throws UserNotFoundException, CreateConflictException{
 		
 		User u1 = users.get(user1.getMailAddress());
 		User u2 = users.get(user2.getMailAddress());
+		
+		if(u1==null || u2== null){
+			throw new UserNotFoundException();
+		}
 		
 		List<String> blockerList1 = u1.getBlockers().stream().map(User::getMailAddress).collect(Collectors.toList());
 		List<String> blockerList2 = u2.getBlockers().stream().map(User::getMailAddress).collect(Collectors.toList());
 		
 		if(blockerList1.contains(u2.getMailAddress()) || blockerList2.contains(u1.getMailAddress())){
-			return false;
+			throw new CreateConflictException();
 		}
 		
 		List<String> mailAddressList1 = u1.getFriends().stream().map(User::getMailAddress).collect(Collectors.toList());
@@ -43,13 +49,21 @@ public class UserService {
 		return true;
 	}
 	
-	public List<String> getFriends(User user){
-		List<String> friends = users.get(user.getMailAddress()).getFriends().stream().map(User::getMailAddress).collect(Collectors.toList());
+	public List<String> getFriends(User user) throws UserNotFoundException{
+		User u = users.get(user.getMailAddress());
+		if(u==null){
+			throw new UserNotFoundException();
+		}
+		List<String> friends = u.getFriends().stream().map(User::getMailAddress).collect(Collectors.toList());
 		return friends;
 	}
 	
-	public List<String> getRecipients(User user){
-		List<String> recipients = users.get(user.getMailAddress()).getObservers().stream().map(User::getMailAddress).collect(Collectors.toList());
+	public List<String> getRecipients(User user) throws UserNotFoundException{
+		User u = users.get(user.getMailAddress());
+		if(u==null){
+			throw new UserNotFoundException();
+		}
+		List<String> recipients = u.getObservers().stream().map(User::getMailAddress).collect(Collectors.toList());
 		return recipients;
 	}
 
@@ -58,10 +72,14 @@ public class UserService {
 		return friends1;
 	}
 	
-	public boolean subscribe(User requestor, User target){
+	public boolean subscribe(User requestor, User target) throws UserNotFoundException{
 		
 		User u1 = users.get(requestor.getMailAddress());
 		User u2 = users.get(target.getMailAddress());
+		
+		if(u1==null || u2== null){
+			throw new UserNotFoundException();
+		}
 		
 		List<String> mailAddressList = u2.getObservers().stream().map(User::getMailAddress).collect(Collectors.toList());
 		if(!mailAddressList.contains(u1.getMailAddress())){
@@ -70,9 +88,13 @@ public class UserService {
 		return true;
 	}
 
-	public boolean block(User requestor, User target) {
+	public boolean block(User requestor, User target) throws UserNotFoundException {
 		User u1 = users.get(requestor.getMailAddress());
 		User u2 = users.get(target.getMailAddress());
+		
+		if(u1==null || u2== null){
+			throw new UserNotFoundException();
+		}
 		
 		List<String> blokerList = u1.getBlockers().stream().map(User::getMailAddress).collect(Collectors.toList());
 		if(!blokerList.contains(u2.getMailAddress())){

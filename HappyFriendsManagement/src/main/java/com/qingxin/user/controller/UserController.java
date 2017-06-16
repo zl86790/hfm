@@ -7,13 +7,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.qingxin.service.UserService;
-import com.qingxin.user.bean.User; 
+import com.qingxin.user.bean.User;
+import com.qingxin.user.exception.CreateConflictException;
+import com.qingxin.user.exception.UserNotFoundException;
+import com.qingxin.user.factory.ResponseFactory; 
 
 @Path("/user")
 public class UserController {
@@ -21,7 +25,7 @@ public class UserController {
 	@Path("/getFriends")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String getFriends(JSONObject obj) {  
+    public Response getFriends(JSONObject obj) {  
 		JSONObject result = new JSONObject();
 		UserService userService = UserService.getInstance();
 		try {
@@ -35,16 +39,25 @@ public class UserController {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return ResponseFactory.buildBadRequestResponse(obj);
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildUserNotFoundExceptionResponse(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
 		}
 		
-		return result.toString();
+		return ResponseFactory.buildSuccessResponse(result);
     }
+
+
 	
 	@POST  
 	@Path("/getRecipients")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String getRecipients(JSONObject obj) {  
+    public Response getRecipients(JSONObject obj) {  
 		JSONObject result = new JSONObject();
 		UserService userService = UserService.getInstance();
 		try {
@@ -54,27 +67,31 @@ public class UserController {
 			result.put("success", true);
 			result.put("recipients", recipients);
 			
-			
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return ResponseFactory.buildBadRequestResponse(obj);
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildUserNotFoundExceptionResponse(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
 		}
 		
-		return result.toString();
+		return ResponseFactory.buildSuccessResponse(result);
     }
 	
 	@POST  
 	@Path("/create")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String create(JSONObject obj) {
+    public Response create(JSONObject obj) {
 		UserService userService = UserService.getInstance();
 		JSONObject result = new JSONObject();
 		
 		try {
 			JSONArray array = (JSONArray) obj.get("friends");
-			
 			boolean success = userService.create(new User(array.get(0).toString()), new User(array.get(1).toString()));
-			
 			result.put("success", success);
 		} catch (JSONException e) {
 			try {
@@ -84,9 +101,18 @@ public class UserController {
 			}
 			e.printStackTrace();
 			
-		} 
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildUserNotFoundExceptionResponse(obj);
+		} catch (CreateConflictException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildConflictExceptionResponse(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
+		}
 		
-		return result.toString();  
+		return ResponseFactory.buildSuccessResponse(result);
         
     }
 	
@@ -94,7 +120,7 @@ public class UserController {
 	@Path("/getCommonFriends")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String getCommonFriends(JSONObject obj) {  
+    public Response getCommonFriends(JSONObject obj) {  
 		JSONObject result = new JSONObject();
 		UserService userService = UserService.getInstance();
 		try {
@@ -111,16 +137,22 @@ public class UserController {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
 		}
 		
-		return result.toString();
+		return ResponseFactory.buildSuccessResponse(result);
+		
     }
 	
 	@POST  
 	@Path("/subscribe")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String subscribe(JSONObject obj) {
+    public Response subscribe(JSONObject obj) {
 		UserService userService = UserService.getInstance();
 		JSONObject result = new JSONObject();
 		
@@ -139,17 +171,23 @@ public class UserController {
 			}
 			e.printStackTrace();
 			
-		} 
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildUserNotFoundExceptionResponse(obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
+		}
 		
-		return result.toString();  
-        
+		return ResponseFactory.buildSuccessResponse(result);
+		
     }
 	
 	@POST  
 	@Path("/block")
 	@Consumes(MediaType.APPLICATION_JSON) 
     @Produces(MediaType.APPLICATION_JSON)  
-    public String block(JSONObject obj) {
+    public Response block(JSONObject obj) {
 		UserService userService = UserService.getInstance();
 		JSONObject result = new JSONObject();
 		
@@ -160,6 +198,9 @@ public class UserController {
 			boolean success = userService.block(new User(requestor),new User(target));
 			
 			result.put("success", success);
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+			return ResponseFactory.buildUserNotFoundExceptionResponse(obj);
 		} catch (JSONException e) {
 			try {
 				result.put("success", false);
@@ -168,9 +209,12 @@ public class UserController {
 			}
 			e.printStackTrace();
 			
-		} 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseFactory.buildServerExceptionResponse(obj);
+		}
 		
-		return result.toString();  
-        
+		return ResponseFactory.buildSuccessResponse(result);
+		
     }
 }

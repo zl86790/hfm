@@ -2,6 +2,8 @@
 
 import com.qingxin.service.UserService;
 import com.qingxin.user.bean.User;
+import com.qingxin.user.exception.CreateConflictException;
+import com.qingxin.user.exception.UserNotFoundException;
 
 import junit.framework.TestCase;
 
@@ -14,7 +16,11 @@ public class UserControllerTest extends TestCase {
 		obiwanKonobi.setMailAddress("john@example.com");
 		
 		UserService service = UserService.getInstance();
-		service.create(anakinSkywalker, obiwanKonobi);
+		try {
+			service.create(anakinSkywalker, obiwanKonobi);
+		} catch (UserNotFoundException | CreateConflictException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
