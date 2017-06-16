@@ -19,7 +19,7 @@ import com.qingxin.user.exception.CreateConflictException;
 import com.qingxin.user.exception.UserNotFoundException;
 import com.qingxin.user.factory.ResponseFactory; 
 
-@Path("/user")
+@Path("/api/user/v1")
 public class UserController {
 	@POST  
 	@Path("/getFriends")
