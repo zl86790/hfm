@@ -1,0 +1,9 @@
+name\lizhe\client\RestClient.class
+name\lizhe\db\DummyDB.class
+name\lizhe\user\exception\UserNotFoundException.class
+name\lizhe\user\factory\ResponseFactory.class
+name\lizhe\user\service\UserService.class
+name\lizhe\server\App.class
+name\lizhe\user\bean\User.class
+name\lizhe\user\controller\UserController.class
+name\lizhe\user\exception\CreateConflictException.class
